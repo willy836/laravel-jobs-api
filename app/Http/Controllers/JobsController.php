@@ -2,63 +2,61 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreJobRequest;
+use App\Http\Resources\JobResource;
+use App\Models\Job;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class JobsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return response()->json('Hello protected index');
+        // return Job::all(); // returns a collection. we need to send json response
+        return JobResource::collection(Job::where('user_id', Auth::user()->id)->get());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(StoreJobRequest $request)
     {
-        //
+        $validatedData = $request->validated();
+
+        $job = Job::create([
+            'user_id' => Auth::user()->id,
+            'company' => $validatedData['company'],
+            'position' => $validatedData['position']
+        ]);
+
+        return new JobResource($job);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function show(Job $job)
     {
-        //
+        if(Auth::user()->id !== $job->user_id){
+            return response()->json(['error' =>  'You are not authorized to make this request'], 403);
+        }
+        return new JobResource($job);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, Job $job)
     {
-        //
+
+        if(Auth::user()->id !== $job->user_id){
+            return response()->json(['error' => 'You are not authorized to update this job'], 403);
+        }
+
+        $job->update($request->all());
+
+        return new JobResource($job);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy(Job $job)
     {
-        //
-    }
+        if(Auth::user()->id !== $job->user_id){
+            return response()->json(['error' => 'You are not authorized to delete this job'], 403);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $job->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response(null, 204);
     }
 }

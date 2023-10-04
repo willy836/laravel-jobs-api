@@ -26,7 +26,7 @@ class JobsController extends Controller
             'position' => $validatedData['position']
         ]);
 
-        return new JobResource($job);
+        return new JobResource($job);   // return response()->json(['job' => $job], 201);
     }
 
     public function show(Job $job)

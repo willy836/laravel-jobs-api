@@ -22,8 +22,8 @@ class StoreJobRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'company' => ['required', 'max:255'],
-            'position' => ['required', 'max:255']
+            'company' => ['required', 'string', 'max:255'],
+            'position' => ['required', 'string', 'max:255']
         ];
     }
 }

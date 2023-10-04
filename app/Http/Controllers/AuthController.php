@@ -49,13 +49,13 @@ class AuthController extends Controller
         return response()->json([
             'user' => $user->name,
             'token' => $token
-        ]);
+        ], 200);
     }
 
     public function logout()
     {
         Auth::user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Logged out successfully']);
+        return response()->json(['message' => 'Logged out successfully'], 200);
     }
 }

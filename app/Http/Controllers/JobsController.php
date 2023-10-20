@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobRequest;
+use App\Http\Requests\UpdateJobRequest;
 use App\Http\Resources\JobResource;
 use App\Models\Job;
 use Illuminate\Http\Request;
@@ -37,14 +38,15 @@ class JobsController extends Controller
         return new JobResource($job);
     }
 
-    public function update(Request $request, Job $job)
+    public function update(UpdateJobRequest $request, Job $job)
     {
+        $validatedData = $request->validated();
 
         if(Auth::user()->id !== $job->user_id){
             return response()->json(['error' => 'You are not authorized to update this job'], 403);
         }
 
-        $job->update($request->all());
+        $job->update($validatedData);
 
         return new JobResource($job);
     }

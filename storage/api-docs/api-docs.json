@@ -13,28 +13,28 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/users/register": {
+        "/api/register": {
             "post": {
                 "tags": [
-                    "Users"
+                    "Auth"
                 ],
                 "description": "Register user",
                 "operationId": "register",
                 "requestBody": {
                     "description": "Input data format",
                     "content": {
-                        "application/x-www-form-urlencoded": {
+                        "application/json": {
                             "schema": {
                                 "properties": {
-                                    "name:": {
+                                    "name": {
                                         "description": "Name of the user",
                                         "type": "string"
                                     },
-                                    "email:": {
+                                    "email": {
                                         "description": "Email of the user",
                                         "type": "string"
                                     },
-                                    "password:": {
+                                    "password": {
                                         "description": "Password of the user",
                                         "type": "string"
                                     }
@@ -45,8 +45,23 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "User registered successfully"
+                    "201": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "type": "string"
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
@@ -54,24 +69,24 @@
                 }
             }
         },
-        "/api/users/login": {
+        "/api/login": {
             "post": {
                 "tags": [
-                    "Users"
+                    "Auth"
                 ],
                 "description": "Login user",
                 "operationId": "login",
                 "requestBody": {
                     "description": "Input data format",
                     "content": {
-                        "application/x-www-form-urlencoded": {
+                        "application/json": {
                             "schema": {
                                 "properties": {
-                                    "email:": {
+                                    "email": {
                                         "description": "Email of the user",
                                         "type": "string"
                                     },
-                                    "password:": {
+                                    "password": {
                                         "description": "Password of the user",
                                         "type": "string"
                                     }
@@ -83,7 +98,22 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "User logged in successfully"
+                        "description": "User logged in successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "type": "string"
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
@@ -91,10 +121,10 @@
                 }
             }
         },
-        "/api/users/logout": {
+        "/api/logout": {
             "post": {
                 "tags": [
-                    "Users"
+                    "Auth"
                 ],
                 "description": "Logout user",
                 "operationId": "logout",
@@ -127,7 +157,17 @@
                 "operationId": "index",
                 "responses": {
                     "200": {
-                        "description": "Successful operation"
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/JobResource"
+                                    }
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
@@ -148,7 +188,7 @@
                 "requestBody": {
                     "description": "Input data format",
                     "content": {
-                        "application/x-www-form-urlencoded": {
+                        "application/json": {
                             "schema": {
                                 "properties": {
                                     "position:": {
@@ -274,7 +314,7 @@
                 "requestBody": {
                     "description": "Input data format",
                     "content": {
-                        "application/x-www-form-urlencoded": {
+                        "application/json": {
                             "schema": {
                                 "properties": {
                                     "position:": {
@@ -304,6 +344,47 @@
                         "api_key": []
                     }
                 ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "JobResource": {
+                "title": "Job Resource",
+                "description": "Schema for a job resource",
+                "properties": {
+                    "id": {
+                        "description": "ID of the job",
+                        "type": "string"
+                    },
+                    "company": {
+                        "description": "Company of the job",
+                        "type": "string"
+                    },
+                    "position": {
+                        "description": "Position of the job",
+                        "type": "string"
+                    },
+                    "status": {
+                        "description": "Status of the job",
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "description": "User ID associated with the job",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp of the job",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp of the job",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
             }
         }
     }

@@ -13,28 +13,28 @@ class AuthController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/api/users/register",
-     *     tags={"Users"},
+     *     path="/api/register",
+     *     tags={"Auth"},
      *     description="Register user",
      *     operationId="register",
      *     @OA\RequestBody(
      *         description="Input data format",
      *         @OA\MediaType(
-     *             mediaType="application/x-www-form-urlencoded",
+     *             mediaType="application/json",
      *             @OA\Schema(
      *                 type="object",
      *                 @OA\Property(
-     *                     property="name:",
+     *                     property="name",
      *                     description="Name of the user",
      *                     type="string",
      *                 ),
      *                 @OA\Property(
-     *                     property="email:",
+     *                     property="email",
      *                     description="Email of the user",
      *                     type="string"
      *                 ),
      *                 @OA\Property(
-     *                     property="password:",
+     *                     property="password",
      *                     description="Password of the user",
      *                     type="string"
      *                 )
@@ -42,8 +42,12 @@ class AuthController extends Controller
      *         )
      *     ),
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="User registered successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="string"),
+     *             @OA\Property(property="token", type="string"),
+     *         )
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -71,23 +75,23 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/users/login",
-     *     tags={"Users"},
+     *     path="/api/login",
+     *     tags={"Auth"},
      *     description="Login user",
      *     operationId="login",
      *     @OA\RequestBody(
      *         description="Input data format",
      *         @OA\MediaType(
-     *             mediaType="application/x-www-form-urlencoded",
+     *             mediaType="application/json",
      *             @OA\Schema(
      *                 type="object",
      *                 @OA\Property(
-     *                     property="email:",
+     *                     property="email",
      *                     description="Email of the user",
      *                     type="string"
      *                 ),
      *                 @OA\Property(
-     *                     property="password:",
+     *                     property="password",
      *                     description="Password of the user",
      *                     type="string"
      *                 )
@@ -97,6 +101,10 @@ class AuthController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="User logged in successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="string"),
+     *             @OA\Property(property="token", type="string"),
+     *         )
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -130,8 +138,8 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/users/logout",
-     *     tags={"Users"},
+     *     path="/api/logout",
+     *     tags={"Auth"},
      *     description="Logout user",
      *     operationId="logout",
      *     @OA\Parameter(

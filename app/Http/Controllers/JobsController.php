@@ -20,7 +20,11 @@ class JobsController extends Controller
  *     
  *     @OA\Response(
  *         response=200,
- *         description="Successful operation",  
+ *         description="Successful operation",
+ *         @OA\JsonContent(
+ *             type="array",
+ *             @OA\Items(ref="#/components/schemas/JobResource"),
+ *         )  
  *     ),
  *     @OA\Response(
  *         response=400,
@@ -45,7 +49,7 @@ class JobsController extends Controller
  *     @OA\RequestBody(
  *         description="Input data format",
  *         @OA\MediaType(
- *             mediaType="application/x-www-form-urlencoded",
+ *             mediaType="application/json",
  *             @OA\Schema(
  *                 type="object",
  *                 @OA\Property(
@@ -157,7 +161,7 @@ class JobsController extends Controller
      *     @OA\RequestBody(
      *         description="Input data format",
      *         @OA\MediaType(
-     *             mediaType="application/x-www-form-urlencoded",
+     *             mediaType="application/json",
      *             @OA\Schema(
      *                 type="object",
      *                 @OA\Property(

@@ -11,11 +11,70 @@ use Illuminate\Support\Facades\Auth;
 
 class JobsController extends Controller
 {
+/**
+ * @OA\Get(
+ *     path="/api/jobs",
+ *     tags={"Jobs"},
+ *     description="Get all jobs",
+ *     operationId="index",
+ *     
+ *     @OA\Response(
+ *         response=200,
+ *         description="Successful operation",  
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad Request",  
+ *     ),
+ *     security={
+ *         {"api_key": {}}
+ *     },
+ * )
+ */
     public function index()
     {
-        // return Job::all(); // returns a collection. we need to send json response
         return JobResource::collection(Job::where('user_id', Auth::user()->id)->get());
     }
+
+/**
+ * @OA\Post(
+ *     path="/api/jobs",
+ *     tags={"Jobs"},
+ *     description="Create a new job",
+ *     operationId="store",
+ *     @OA\RequestBody(
+ *         description="Input data format",
+ *         @OA\MediaType(
+ *             mediaType="application/x-www-form-urlencoded",
+ *             @OA\Schema(
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="position:",
+ *                     description="Name of the job position eg Full-stack Developer",
+ *                     type="string",
+ *                 ),
+ *                 @OA\Property(
+ *                     property="company:",
+ *                     description="Name of the company",
+ *                     type="string"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Job created successfully",
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad Request",
+ *         
+ *     ),
+ *     security={
+ *         {"api_key": {}}
+ *     },
+ * )
+ */
 
     public function store(StoreJobRequest $request)
     {
@@ -30,6 +89,36 @@ class JobsController extends Controller
         return new JobResource($job);   // return response()->json(['job' => $job], 201);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/jobs/{jobId}",
+     *     tags={"Jobs"},
+     *     description="Get a single job",
+     *     operationId="show",
+     *     @OA\Parameter(
+     *         name="jobId",
+     *         in="path",
+     *         description="ID of job that needs to be fetched",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Job fetched successfully",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request"
+     *     ),
+     *     security={
+     *         {"api_key": {}}
+     *     },
+     * )
+     */
+
     public function show(Job $job)
     {
         if(Auth::user()->id !== $job->user_id){
@@ -37,6 +126,55 @@ class JobsController extends Controller
         }
         return new JobResource($job);
     }
+
+    /**
+     * @OA\Patch(
+     *     path="/api/jobs/{jobId}",
+     *     tags={"Jobs"},
+     *     description="Updates a job that corresponds to the given id",
+     *     operationId="update",
+     *     @OA\Parameter(
+     *         name="jobId",
+     *         in="path",
+     *         description="ID of job that needs to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Job updated successfully",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request"
+     *     ),
+     *     security={
+     *         {"api_key": {}}
+     *     },
+     *     @OA\RequestBody(
+     *         description="Input data format",
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="position:",
+     *                     description="Updated job position",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="company:",
+     *                     description="Updated company name",
+     *                     type="string"
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     */
 
     public function update(UpdateJobRequest $request, Job $job)
     {
@@ -50,6 +188,44 @@ class JobsController extends Controller
 
         return new JobResource($job);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/jobs/{jobId}",
+     *     tags={"Jobs"},
+     *     description="Deletes a job",
+     *     operationId="destroy",
+     *     @OA\Parameter(
+     *         name="api_key",
+     *         in="header",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="jobId",
+     *         in="path",
+     *         description="Job id to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Success; no content",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Job not found",
+     *     ),
+     *     security={
+     *         {"api_key": {}}
+     *     },
+     * )
+     */
 
     public function destroy(Job $job)
     {

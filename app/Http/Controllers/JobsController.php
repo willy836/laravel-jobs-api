@@ -17,7 +17,6 @@ class JobsController extends Controller
  *     tags={"Jobs"},
  *     description="Get all jobs",
  *     operationId="index",
- *     
  *     @OA\Response(
  *         response=200,
  *         description="Successful operation",
@@ -27,11 +26,11 @@ class JobsController extends Controller
  *         )  
  *     ),
  *     @OA\Response(
- *         response=400,
- *         description="Bad Request",  
+ *         response=403,
+ *         description="Unauthorized",  
  *     ),
  *     security={
- *         {"api_key": {}}
+ *         {"sanctum": {}}
  *     },
  * )
  */
@@ -53,12 +52,12 @@ class JobsController extends Controller
  *             @OA\Schema(
  *                 type="object",
  *                 @OA\Property(
- *                     property="position:",
+ *                     property="position",
  *                     description="Name of the job position eg Full-stack Developer",
  *                     type="string",
  *                 ),
  *                 @OA\Property(
- *                     property="company:",
+ *                     property="company",
  *                     description="Name of the company",
  *                     type="string"
  *                 )
@@ -68,14 +67,17 @@ class JobsController extends Controller
  *     @OA\Response(
  *         response=201,
  *         description="Job created successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             ref="#/components/schemas/JobResource",
+ *         )
  *     ),
  *     @OA\Response(
- *         response=400,
- *         description="Bad Request",
- *         
+ *         response=403,
+ *         description="Unauthorized",        
  *     ),
- *     security={
- *         {"api_key": {}}
+ *      security={
+ *         {"sanctum": {}}
  *     },
  * )
  */
@@ -90,7 +92,7 @@ class JobsController extends Controller
             'position' => $validatedData['position']
         ]);
 
-        return new JobResource($job);   // return response()->json(['job' => $job], 201);
+        return new JobResource($job); 
     }
 
     /**
@@ -102,23 +104,26 @@ class JobsController extends Controller
      *     @OA\Parameter(
      *         name="jobId",
      *         in="path",
-     *         description="ID of job that needs to be fetched",
+     *         description="Job ID",
      *         required=true,
      *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
+     *             type="string",
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Job fetched successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             ref="#/components/schemas/JobResource",
+     *         )
      *     ),
      *     @OA\Response(
-     *         response=400,
-     *         description="Bad Request"
+     *         response=403,
+     *         description="Unauthorized",
      *     ),
      *     security={
-     *         {"api_key": {}}
+     *         {"sanctum": {}}
      *     },
      * )
      */
@@ -135,29 +140,17 @@ class JobsController extends Controller
      * @OA\Patch(
      *     path="/api/jobs/{jobId}",
      *     tags={"Jobs"},
-     *     description="Updates a job that corresponds to the given id",
+     *     description="Update a job",
      *     operationId="update",
      *     @OA\Parameter(
      *         name="jobId",
      *         in="path",
-     *         description="ID of job that needs to be updated",
+     *         description="Job ID",
      *         required=true,
      *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
+     *             type="string",
      *         )
      *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Job updated successfully",
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Bad Request"
-     *     ),
-     *     security={
-     *         {"api_key": {}}
-     *     },
      *     @OA\RequestBody(
      *         description="Input data format",
      *         @OA\MediaType(
@@ -165,18 +158,33 @@ class JobsController extends Controller
      *             @OA\Schema(
      *                 type="object",
      *                 @OA\Property(
-     *                     property="position:",
+     *                     property="position",
      *                     description="Updated job position",
      *                     type="string",
      *                 ),
      *                 @OA\Property(
-     *                     property="company:",
+     *                     property="company",
      *                     description="Updated company name",
      *                     type="string"
      *                 )
      *             )
      *         )
-     *     )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Job updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             ref="#/components/schemas/JobResource",
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized"
+     *     ),
+     *     security={
+     *         {"sanctum": {}}
+     *     },
      * )
      */
 
@@ -197,24 +205,15 @@ class JobsController extends Controller
      * @OA\Delete(
      *     path="/api/jobs/{jobId}",
      *     tags={"Jobs"},
-     *     description="Deletes a job",
+     *     description="Delete a job",
      *     operationId="destroy",
-     *     @OA\Parameter(
-     *         name="api_key",
-     *         in="header",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="string"
-     *         )
-     *     ),
      *     @OA\Parameter(
      *         name="jobId",
      *         in="path",
-     *         description="Job id to delete",
+     *         description="Job id",
      *         required=true,
      *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
+     *             type="string",
      *         ),
      *     ),
      *     @OA\Response(
@@ -222,11 +221,11 @@ class JobsController extends Controller
      *         description="Success; no content",
      *     ),
      *     @OA\Response(
-     *         response=404,
-     *         description="Job not found",
+     *         response=403,
+     *         description="Unauthorized",
      *     ),
      *     security={
-     *         {"api_key": {}}
+     *         {"sanctum": {}}
      *     },
      * )
      */

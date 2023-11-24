@@ -121,33 +121,6 @@
                 }
             }
         },
-        "/api/logout": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "description": "Logout user",
-                "operationId": "logout",
-                "parameters": [
-                    {
-                        "name": "api_key",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User logged out successfully"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    }
-                }
-            }
-        },
         "/api/jobs": {
             "get": {
                 "tags": [
@@ -169,13 +142,13 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "Bad Request"
+                    "403": {
+                        "description": "Unauthorized"
                     }
                 },
                 "security": [
                     {
-                        "api_key": []
+                        "sanctum": []
                     }
                 ]
             },
@@ -191,11 +164,11 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "position:": {
+                                    "position": {
                                         "description": "Name of the job position eg Full-stack Developer",
                                         "type": "string"
                                     },
-                                    "company:": {
+                                    "company": {
                                         "description": "Name of the company",
                                         "type": "string"
                                     }
@@ -207,15 +180,22 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Job created successfully"
+                        "description": "Job created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobResource"
+                                }
+                            }
+                        }
                     },
-                    "400": {
-                        "description": "Bad Request"
+                    "403": {
+                        "description": "Unauthorized"
                     }
                 },
                 "security": [
                     {
-                        "api_key": []
+                        "sanctum": []
                     }
                 ]
             }
@@ -231,25 +211,31 @@
                     {
                         "name": "jobId",
                         "in": "path",
-                        "description": "ID of job that needs to be fetched",
+                        "description": "Job ID",
                         "required": true,
                         "schema": {
-                            "type": "integer",
-                            "format": "int64"
+                            "type": "string"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Job fetched successfully"
+                        "description": "Job fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobResource"
+                                }
+                            }
+                        }
                     },
-                    "400": {
-                        "description": "Bad Request"
+                    "403": {
+                        "description": "Unauthorized"
                     }
                 },
                 "security": [
                     {
-                        "api_key": []
+                        "sanctum": []
                     }
                 ]
             },
@@ -257,25 +243,16 @@
                 "tags": [
                     "Jobs"
                 ],
-                "description": "Deletes a job",
+                "description": "Delete a job",
                 "operationId": "destroy",
                 "parameters": [
                     {
-                        "name": "api_key",
-                        "in": "header",
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "Job id",
                         "required": true,
                         "schema": {
                             "type": "string"
-                        }
-                    },
-                    {
-                        "name": "jobId",
-                        "in": "path",
-                        "description": "Job id to delete",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
                         }
                     }
                 ],
@@ -283,13 +260,13 @@
                     "204": {
                         "description": "Success; no content"
                     },
-                    "404": {
-                        "description": "Job not found"
+                    "403": {
+                        "description": "Unauthorized"
                     }
                 },
                 "security": [
                     {
-                        "api_key": []
+                        "sanctum": []
                     }
                 ]
             },
@@ -297,17 +274,16 @@
                 "tags": [
                     "Jobs"
                 ],
-                "description": "Updates a job that corresponds to the given id",
+                "description": "Update a job",
                 "operationId": "update",
                 "parameters": [
                     {
                         "name": "jobId",
                         "in": "path",
-                        "description": "ID of job that needs to be updated",
+                        "description": "Job ID",
                         "required": true,
                         "schema": {
-                            "type": "integer",
-                            "format": "int64"
+                            "type": "string"
                         }
                     }
                 ],
@@ -317,11 +293,11 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "position:": {
+                                    "position": {
                                         "description": "Updated job position",
                                         "type": "string"
                                     },
-                                    "company:": {
+                                    "company": {
                                         "description": "Updated company name",
                                         "type": "string"
                                     }
@@ -333,15 +309,22 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Job updated successfully"
+                        "description": "Job updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobResource"
+                                }
+                            }
+                        }
                     },
-                    "400": {
-                        "description": "Bad Request"
+                    "403": {
+                        "description": "Unauthorized"
                     }
                 },
                 "security": [
                     {
-                        "api_key": []
+                        "sanctum": []
                     }
                 ]
             }
@@ -385,6 +368,14 @@
                     }
                 },
                 "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
             }
         }
     }

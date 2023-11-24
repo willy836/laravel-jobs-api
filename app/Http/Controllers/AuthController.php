@@ -136,31 +136,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/logout",
-     *     tags={"Auth"},
-     *     description="Logout user",
-     *     operationId="logout",
-     *     @OA\Parameter(
-     *         name="api_key",
-     *         in="header",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="string"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="User logged out successfully",
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Bad Request"
-     *     )
-     * )
-     */
-
     public function logout()
     {
         Auth::user()->currentAccessToken()->delete();

@@ -11,11 +11,76 @@ use Illuminate\Support\Facades\Auth;
 
 class JobsController extends Controller
 {
+/**
+ * @OA\Get(
+ *     path="/api/jobs",
+ *     tags={"Jobs"},
+ *     description="Get all jobs",
+ *     operationId="index",
+ *     @OA\Response(
+ *         response=200,
+ *         description="Successful operation",
+ *         @OA\JsonContent(
+ *             type="array",
+ *             @OA\Items(ref="#/components/schemas/JobResource"),
+ *         )  
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized",  
+ *     ),
+ *     security={
+ *         {"sanctum": {}}
+ *     },
+ * )
+ */
     public function index()
     {
-        // return Job::all(); // returns a collection. we need to send json response
         return JobResource::collection(Job::where('user_id', Auth::user()->id)->get());
     }
+
+/**
+ * @OA\Post(
+ *     path="/api/jobs",
+ *     tags={"Jobs"},
+ *     description="Create a new job",
+ *     operationId="store",
+ *     @OA\RequestBody(
+ *         description="Input data format",
+ *         @OA\MediaType(
+ *             mediaType="application/json",
+ *             @OA\Schema(
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="position",
+ *                     description="Name of the job position eg Full-stack Developer",
+ *                     type="string",
+ *                 ),
+ *                 @OA\Property(
+ *                     property="company",
+ *                     description="Name of the company",
+ *                     type="string"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Job created successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             ref="#/components/schemas/JobResource",
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized",        
+ *     ),
+ *      security={
+ *         {"sanctum": {}}
+ *     },
+ * )
+ */
 
     public function store(StoreJobRequest $request)
     {
@@ -27,8 +92,41 @@ class JobsController extends Controller
             'position' => $validatedData['position']
         ]);
 
-        return new JobResource($job);   // return response()->json(['job' => $job], 201);
+        return new JobResource($job); 
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/jobs/{jobId}",
+     *     tags={"Jobs"},
+     *     description="Get a single job",
+     *     operationId="show",
+     *     @OA\Parameter(
+     *         name="jobId",
+     *         in="path",
+     *         description="Job ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Job fetched successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             ref="#/components/schemas/JobResource",
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized",
+     *     ),
+     *     security={
+     *         {"sanctum": {}}
+     *     },
+     * )
+     */
 
     public function show(Job $job)
     {
@@ -37,6 +135,58 @@ class JobsController extends Controller
         }
         return new JobResource($job);
     }
+
+    /**
+     * @OA\Patch(
+     *     path="/api/jobs/{jobId}",
+     *     tags={"Jobs"},
+     *     description="Update a job",
+     *     operationId="update",
+     *     @OA\Parameter(
+     *         name="jobId",
+     *         in="path",
+     *         description="Job ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Input data format",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="position",
+     *                     description="Updated job position",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="company",
+     *                     description="Updated company name",
+     *                     type="string"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Job updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             ref="#/components/schemas/JobResource",
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized"
+     *     ),
+     *     security={
+     *         {"sanctum": {}}
+     *     },
+     * )
+     */
 
     public function update(UpdateJobRequest $request, Job $job)
     {
@@ -50,6 +200,35 @@ class JobsController extends Controller
 
         return new JobResource($job);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/jobs/{jobId}",
+     *     tags={"Jobs"},
+     *     description="Delete a job",
+     *     operationId="destroy",
+     *     @OA\Parameter(
+     *         name="jobId",
+     *         in="path",
+     *         description="Job id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Success; no content",
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized",
+     *     ),
+     *     security={
+     *         {"sanctum": {}}
+     *     },
+     * )
+     */
 
     public function destroy(Job $job)
     {
